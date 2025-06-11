@@ -1,0 +1,48 @@
+name: Build EXE with PyInstaller
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: 3.10
+
+    - name: Install dependencies
+      run: |
+        pip install pyinstaller
+        pip install PyOpenGL PyOpenGL_accelerate pygame
+
+    - name: Build EXE
+      run: |
+        pyinstaller --onefile plano.py `
+        --add-data "objloader.py;." `
+        --add-data "backroom.obj;." `
+        --add-data "backroom.mtl;." `
+        --add-data "trex.obj;." `
+        --add-data "trex.mtl;." `
+        --add-data "Sketchfab_2022_04_30_13_07_42.mtl;." `
+        --add-data "Carpet.png;." `
+        --add-data "Ceiling2.png;." `
+        --add-data "Vents.png;." `
+        --add-data "Walls.jpg;." `
+        --add-data "Walls.png;." `
+        --add-data "Piece_1.png;." `
+        --add-data "dinosaur_diffuse.jpg;." `
+        --add-data "Los_Cubitos.mp3;." `
+        --windowed
+
+    - name: Upload EXE
+      uses: actions/upload-artifact@v4
+      with:
+        name: videojuego
+        path: dist/plano.exe
